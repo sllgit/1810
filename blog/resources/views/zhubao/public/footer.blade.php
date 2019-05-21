@@ -1,6 +1,6 @@
 <div class="footNav">
     <dl>
-        <a href="/zhubao">
+        <a href="/">
             <dt><span class="glyphicon glyphicon-home"></span></dt>
             <dd>微店</dd>
         </a>

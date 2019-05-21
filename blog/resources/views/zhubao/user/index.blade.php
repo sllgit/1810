@@ -23,12 +23,13 @@
 <div class="maincont">
     <div class="userName">
         <dl class="names">
-            <dt><img src="{{asset('images/user01.png')}}" /></dt>
+            <dt><img src="{{$data['headimgurl']}}" /></dt>
             <dd>
-                @if($user=='')
-                    <h3>还未登陆就来？滚去<a href="/zhubao/login">登陆</a></h3>
+                @if($data=='')
+                    <h4>还未登陆就来？滚去<a href="/zhubao/login">登陆</a></h4>
                 @else
-                    <h3>{{$user['name']}}</h3>
+                    <h4>昵称：{{$data['nickname']}}</h4><br>
+                    <h4>地址：{{$data['country']}}{{$data['province']}}{{$data['city']}}</h4>
                 @endif
             </dd>
             <div class="clearfix"></div>

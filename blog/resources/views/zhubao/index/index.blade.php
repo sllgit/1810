@@ -26,12 +26,12 @@
     <div class="head-top">
         <img src="{{asset('images/head.jpg')}}" />
         <dl>
-            <dt><a href="user.html"><img src="{{asset('images/touxiang.jpg')}}" /></a></dt>
+            <dt><a href="user.html"><img src="{{$data['headimgurl']}}" /></a></dt>
             <dd>
-                @if($user=='')
+                @if($data=='')
                 <h1 class="username">还没登陆就来？滚去<a href="/zhubao/login" style="color:red;">登陆</a></h1>
                 @else
-                    <h1 class="username">欢迎 <a href="/zhubao/user" style="color:red;">{{$user['name']}}</a>登陆</h1>
+                    <h1 class="username">欢迎 <a href="/zhubao/user" style="color:red;">{{$data['nickname']}}</a>登陆  </h1>
                 @endif
                 <ul>
                     <li><a href="/zhubao/allshop"><strong>{{$count}}</strong><p>全部商品</p></a></li>
@@ -47,7 +47,7 @@
         <input type="text" name="goods_name" class="seaText fl" />
         <input type="submit" value="搜索" class="seaSub fr" />
     </form><!--search/-->
-    @if($user=='')
+    @if($data=='')
     <ul class="reg-login-click">
         <li><a href="/zhubao/login">登录</a></li>
         <li><a href="/zhubao/register" class="rlbg">注册</a></li>
@@ -63,7 +63,7 @@
     </div><!--sliderA/-->
     <ul class="pronav">
         {{--分类pid=0--}}
-        @foreach($data as $k=>$v)
+        @foreach($date as $k=>$v)
         <li><a href="/zhubao/allshop/{{$v->fenlei_id}}">{{$v->fenlei_name}}</a></li>
         @endforeach
         <div class="clearfix"></div>

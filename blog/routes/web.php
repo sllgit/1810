@@ -11,12 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-//    Schema::table('sihao', function ($table) {
-//        $table->softDeletes();
-//    });
-    return view('welcome');
-});
+//Route::get('/', function () {
+////    Schema::table('sihao', function ($table) {
+////        $table->softDeletes();
+////    });
+//    return view('welcome');
+//});
 //闭包传参
 //Route::get('/index',function (){
 //    return 123;
@@ -71,7 +71,8 @@ Route::get('/text',function (){
     request()->session()->put('user',123);
 //    return 123;
 });
-
+//微店
+route::get('/','ZhuBaoController@index');
 //珠宝商城 主页
 Route::prefix('/zhubao')->group(function(){
     //微店 注册
@@ -82,8 +83,9 @@ Route::prefix('/zhubao')->group(function(){
     route::post('emailgetcode','ZhuBaoController@emailgetcode');
     //微店 登录
     route::any('login','ZhuBaoController@login');
-    //微店
-    route::get('/','ZhuBaoController@index');
+    //微信授权登录
+    route::any('wxlogin','ZhuBaoController@wxlogin');
+    route::any('getcode','ZhuBaoController@getcode');
         //商品详情
         route::get('detail/{id}','ZhuBaoController@detail');
 
@@ -150,3 +152,42 @@ route::any('detail/{id}','ZhuBaoController@details');//详情
 route::any('del/{id}','ZhuBaoController@del');//删除
 route::any('upd/{id}','ZhuBaoController@upd');//修改
 route::any('upddo','ZhuBaoController@upddo');//修改执行
+
+route::any('wxshop','WxController@wxshop');
+    //X-Admin后台 微信首次关注回复设置
+route::prefix('/admin')->group(function(){
+    route::any('/','admin\IndexController@index');//后台主页
+    route::any('/add','admin\IndexController@add');//首次关注内容添加
+    route::any('/settype','admin\IndexController@settype');//设置首次关注回复类型
+    route::any('/medialist','admin\IndexController@medialist');//首次关注回复素材列表
+    route::any('/mediaupd/{id}','admin\IndexController@mediaupd');//素材列表修改
+    route::any('/mediadel/{id}','admin\IndexController@mediadel');//素材列表删除
+    route::any('/index','admin\GroupController@index');//群发列表
+    route::any('/groupsend/{openid}','admin\GroupController@groupsend');//根据openid群发发送
+    route::any('/taggroupsend','admin\GroupController@taggroupsend');//根据标签群发发送
+
+    route::any('/cteatetag','admin\GroupController@cteatetag');//创建标签
+    route::any('/taglist','admin\GroupController@taglist');//标签列表
+    route::any('/alltaglist','admin\GroupController@alltaglist');//所有标签以及粉丝列表
+    route::any('/tagdel/{tagid}','admin\GroupController@tagdel');//标签删除
+    route::any('/settagforuser','admin\GroupController@settagforuser');//批量为用户添加标签
+
+    route::any('/cteatemenu','admin\MenuController@cteatemenu');//创建菜单
+    route::any('/menulist','admin\MenuController@menulist');//菜单列表
+    route::any('/twomenu/{id}','admin\MenuController@twomenu');//菜单列表
+    route::any('/delmenu/{id}','admin\MenuController@delmenu');//菜单删除
+    route::any('/updmenu/{id}','admin\MenuController@updmenu');//菜单修改
+    route::any('/upddomenu','admin\MenuController@upddomenu');//菜单执行修改
+
+    route::any('/cteatemenujog','admin\MenuController@cteatemenujog');//创建菜单接口
+    route::any('/delmenujog','admin\MenuController@delmenujog');//删除菜单接口
+    route::any('/selectmenujog','admin\MenuController@selectmenujog');//查询菜单接口
+
+    route::any('/createpersonmenu','admin\MenuController@createpersonmenu');//创建个性化菜单
+
+    route::any('/bindingdo','ZhuBaoController@bindingdo');//授权用户绑定
+});
+route::any('/admin/login','admin\IndexController@login');
+route::any('text','admin\IndexController@text');
+route::any('retype','admin\IndexController@setResponseType');
+route::any('addMeateial/{type}','admin\IndexController@addMeateial');

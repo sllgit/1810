@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f4cfc7a6-1888-4151-b61f-04de5ebc1d7f" name="aliyun" url="http://39.96.205.6">
+        <fileTransfer host="39.96.205.6" port="22" rootFolder="/data/wwwroot/default/month8/wechat" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="7bcdaa01-1cae-478f-bfd5-b203b05aa97e" name="sunlong" url="http://47.93.2.112">
+        <fileTransfer host="47.93.2.112" port="22" rootFolder="/data/wwwroot/default/blog" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

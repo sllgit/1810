@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\User;
 use function foo\func;
 use Illuminate\Http\Request;
 use DB;
@@ -146,13 +147,86 @@ class ZhuBaoController extends Controller
             return view('zhubao.login.login');
         }
     }
+
+    public function getcode(){
+        //1.用户同意授权，获取code
+        $appid = env('APPID');
+        $uri = urlencode("http://47.93.2.112/zhubao/wxlogin");
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=$appid&redirect_uri=$uri&response_type=code&scope=snsapi_userinfo&state=12345#wechat_redirect";
+        //跳转到回调地址的方法里
+        header('location:'.$url);
+    }
+
+    /**
+     * @content 微信授权登录
+     */
+    public function wxlogin()    {
+        $code = \request()->code;
+        $appid = env('APPID');
+        $secret = env('APPSECRET');
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=$appid&secret=$secret&code=$code&grant_type=authorization_code";
+        $re = file_get_contents($url);
+        $token = json_decode($re,true)['access_token'];
+        $openid = json_decode($re,true)['openid'];
+        $user_url = "https://api.weixin.qq.com/sns/userinfo?access_token=$token&openid=$openid&lang=zh_CN";
+        $user_re = file_get_contents($user_url);
+        $data = json_decode($user_re,true);
+        $userinfo = User::where('openid',$openid)->first();
+        if(empty($userinfo)){
+            $data = serialize($data);
+            return view('admin/binding',compact('data'));
+        }else{
+           return redirect('/');
+        }
+
+
+    }
+    /**
+     * @content 执行授权登录
+     */
+    public function bindingdo()
+    {
+        $name = \request()->name;
+        $user = \request()->user;
+        $info =unserialize($user);
+        $where1=[
+            'tel'=>$name
+        ];
+        $where2=[
+            'email'=>$name
+        ];
+        $userinfo = User::where($where1)->orWhere($where2)->first();
+        if(empty($userinfo)){
+            echo "<script>alert('无此用户，请先注册');location.href='/zhubao/register'</script>";
+        }else{
+            $data = [
+                'openid'=>$info['openid'],
+                'nickname'=>$info['nickname'],
+                'headimgurl'=>$info['headimgurl'],
+                'address'=>$info['country'].$info['province'].$info['city']
+            ];
+            $res = User::where($where1)->orWhere($where2)->update($data);
+            if($res){
+                $info['user_id']=$userinfo->user_id;
+                \request()->session()->put('user',$info);
+                echo "<script>alert('绑定成功');location.href='/'</script>";
+            }else{
+                echo "<script>alert('绑定失败');location.href='/zhubao/getcode'</script>";
+            }
+        }
+
+    }
+
     //微店
     public function index()
     {
         //获取session值
-        $user=request()->session()->get('user');
+        $data=request()->session()->get('user');
+        if(!$data){
+           return redirect('/zhubao/register');
+        }
         //获取分类数据
-        $data = DB::table('fenlei')->where('pid',0)->get();
+        $date = DB::table('fenlei')->where('pid',0)->get();
         //获取热卖商品数据
         $host = DB::table('goods')->where('goods_hots',1)->get();
         //获取精品商品数据
@@ -162,7 +236,7 @@ class ZhuBaoController extends Controller
         //获取所有商品个数
         $count = DB::table('goods')->where('goods_up',1)->count();
 //        dd($img);
-        return view('zhubao.index.index',compact('user','data','host','best','img','count'));
+        return view('zhubao.index.index',compact('data','date','host','best','img','count'));
     }
     //微店详情
     public function detail($id)
@@ -172,7 +246,6 @@ class ZhuBaoController extends Controller
             //缓存取数据
             $data = cache('data_'.$id);
             if(!$data){
-                echo 111;
                 $data = DB::table('goods')->where('goods_id',$id)->first();
                 cache(['data_'.$id=>$data],60*24);
             }
@@ -590,52 +663,7 @@ class ZhuBaoController extends Controller
         $alipaySevice = new \AlipayTradeService(config('alipay'));
         $alipaySevice->writeLog(var_export($_POST,true));
         $result = $alipaySevice->check($arr);
-        if($result) {//验证成功
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //请在这里加上商户的业务逻辑程序代
 
-
-            //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
-
-            //获取支付宝的通知返回参数，可参考技术文档中服务器异步通知参数列表
-
-            //商户订单号
-
-            $out_trade_no = $_POST['out_trade_no'];
-
-            //支付宝交易号
-
-            $trade_no = $_POST['trade_no'];
-
-            //交易状态
-            $trade_status = $_POST['trade_status'];
-
-
-            if($_POST['trade_status'] == 'TRADE_FINISHED') {
-
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
-                //如果有做过处理，不执行商户的业务程序
-
-                //注意：
-                //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
-            }
-            else if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
-                //如果有做过处理，不执行商户的业务程序
-                //注意：
-                //付款完成后，支付宝系统发送该交易状态通知
-            }
-            //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
-            echo "success";	//请不要修改或删除
-        }else {
-            //验证失败
-            echo "fail";
-
-        }
     }
     //新增收货地址
     public function address($id=0){
@@ -748,9 +776,11 @@ class ZhuBaoController extends Controller
         return view('zhubao.car.success',compact('data','allprice'));
     }
     //我的
-    public function user(){
-        $user=request()->session()->get('user');
-        return view('zhubao.user.index',compact('user'));
+    public function user()
+    {
+        //获取session值
+        $data=request()->session()->get('user');
+        return view('zhubao.user.index',compact('data'));
     }
     //我的订单
     public function order(){
@@ -875,5 +905,10 @@ class ZhuBaoController extends Controller
             $store_result = $photo->storeAs(date("Ymd"),date("YmdHis").rand(100,999).'.'.$extension);
             return $store_result;
         }
+    }
+
+    public function wxshop()
+    {
+        echo 1112;
     }
 }

@@ -8,11 +8,11 @@ return [
 
     //异步通知地址
 //    'notify_url' => "http://localhost/alipay/notify_url.php",
-    'notify_url' => "http://www.laravelshop.com/zhubao/notify",
+    'notify_url' => "47.93.2.112/zhubao/notify",
 
     //同步跳转
 //    'return_url' => "http://localhost/alipay/return_url.php",
-    'return_url' => "http://www.laravelshop.com/zhubao/return",
+    'return_url' => "47.93.2.112/zhubao/return",
 
     //编码格式
     'charset' => "UTF-8",

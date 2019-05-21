@@ -23,4 +23,4 @@ return [
     //支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。
     'alipay_public_key' => "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAseJwOfWDgk+2OmsRSZ19siG+VDA/KVr/anVL5MEv9CEHdGENuPEPVd36uN26wNbuOn+v/6+R6QM3SCuicHt3MLun7MYO4+myvQiK08v6pY/Twf5ktwQfxfHP9K4qS9Z1Sqq4y8pN3vU2H+B9Hb6SybRs9u/tTamFKVSNAyUojm8f6kZPxrSGg2hl7Hlv64a27MHCuo4AFu3Fejz3lWVWySNUkvLkNJDYZu9nL3/WCCZfF95FH4/6jBT/SSZd5/LOQW7/fTjtIZN2GflG9Pt0Al8AUvpHU2HjJnmWYAgibwY988d7tU3Qf26HeKOtNpSv/0NIMkVZCJg9bI9Ftrsa6QIDAQAB",
     'seller_id'=>'2088102177251776',
-];
+    ];
